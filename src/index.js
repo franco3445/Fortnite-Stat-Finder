@@ -10,50 +10,50 @@ const __dirname = dirname(__filename);
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
-  app.quit();
+    app.quit();
 }
 
 let mainWindow;
 
 const createWindow = () => {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'), // Securely expose APIs
-    },
-  });
+    // Create the browser window.
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'), // Securely expose APIs
+        },
+    });
 
-  // Load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    // Load the index.html of the app.
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {
-  createWindow();
+    createWindow();
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
 });
 
 // Quit when all windows are closed, except on macOS.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 
 // Handle screenshot capture from renderer
 ipcMain.handle('capture-screenshot', async () => {
-  const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
-  const screenshotPath = path.join(__dirname, 'screenshot.png');
-  fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
+    const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
+    const screenshotPath = path.join(__dirname, 'screenshot.png');
+    fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
 
-  return screenshotPath; // Send path back to renderer
+    return screenshotPath; // Send path back to renderer
 });
