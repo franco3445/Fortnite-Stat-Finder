@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, desktopCapturer, ipcMain } from 'electron';
 import started from 'electron-squirrel-startup';
 import path from 'node:path';
 import { dirname } from 'path';
@@ -53,9 +53,9 @@ app.on('window-all-closed', () => {
 ipcMain.handle('capture-screenshot', async () => {
   if (!mainWindow) return;
 
-  const image = await mainWindow.capturePage();
+  const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
   const screenshotPath = path.join(__dirname, 'screenshot.png');
-  fs.writeFileSync(screenshotPath, image.toPNG());
+  fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
 
   return screenshotPath; // Send path back to renderer
 });
