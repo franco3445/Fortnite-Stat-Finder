@@ -51,9 +51,13 @@ app.on('window-all-closed', () => {
 
 // Handle screenshot capture from renderer
 ipcMain.handle('capture-screenshot', async () => {
-    const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
-    const screenshotPath = path.join(__dirname, 'screenshot.png');
-    fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
-
-    return screenshotPath; // Send path back to renderer
+    return await createScreenshot();
 });
+
+async function createScreenshot () {
+  const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
+  const screenshotPath = path.join(__dirname, 'screenshot.png');
+  fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
+
+  return screenshotPath; // Send path back to renderer
+}
