@@ -1,4 +1,4 @@
-import { app, BrowserWindow, desktopCapturer, ipcMain } from 'electron';
+import { app, BrowserWindow, desktopCapturer, globalShortcut, ipcMain } from 'electron';
 import started from 'electron-squirrel-startup';
 import fs from 'fs';
 import path from 'node:path';
@@ -42,6 +42,18 @@ app.whenReady().then(() => {
             createWindow();
         }
     });
+
+    const ret = globalShortcut.register('Ctrl+Shift+K', () => {
+        main()
+            .then();
+    })
+
+    if (!ret) {
+        console.log('registration failed')
+    }
+
+    // Check whether a shortcut is registered.
+    console.log(globalShortcut.isRegistered('Ctrl+Shift+K'))
 });
 
 // Quit when all windows are closed, except on macOS.
@@ -57,11 +69,11 @@ ipcMain.handle('capture-screenshot', async () => {
 });
 
 async function main() {
+    console.log('Starting main function...')
     const screenshotPath = await captureScreenshot();
     const croppedPath = await cropScreenshot(screenshotPath);
     const userName = await readText(croppedPath);
     console.log(`Found text: ${userName}`);
-    return croppedPath;
 }
 
 async function captureScreenshot() {
