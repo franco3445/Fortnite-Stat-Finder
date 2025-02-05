@@ -57,16 +57,23 @@ ipcMain.handle('capture-screenshot', async () => {
 });
 
 async function main() {
-    const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
-    const screenshotPath = path.join(__dirname, 'screenshot.png');
-    await fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
-
-    const croppedPath = await cropScreenshot(screenshotPath)
-    await readText(croppedPath);
+    const screenshotPath = await captureScreenshot();
+    const croppedPath = await cropScreenshot(screenshotPath);
+    const userName = await readText(croppedPath);
+    console.log(`Found text: ${userName}`);
     return croppedPath;
 }
 
+async function captureScreenshot() {
+    console.log('Capturing screenshot...');
+    const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
+    const screenshotPath = path.join(__dirname, 'screenshot.png');
+    await fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
+    return screenshotPath
+}
+
 async function cropScreenshot(imagePath){
+    console.log('Cropping screenshot...');
     const croppedPath = path.join(__dirname, 'screenshot_crop.png');
     await sharp(imagePath)
         .extract({ width: 500, height: 50, left: 700, top: 50 }) // Crop starting from (50,50)
@@ -76,9 +83,9 @@ async function cropScreenshot(imagePath){
 }
 
 async function readText(imagePath) {
-    const worker = await createWorker('eng');
     console.log('Recognizing text...')
+    const worker = await createWorker('eng');
     const result = await worker.recognize(imagePath);
-    console.log(result.data.text);
     await worker.terminate();
+    return result.data.text;
 }
