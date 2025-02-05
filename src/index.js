@@ -1,9 +1,10 @@
 import { app, BrowserWindow, desktopCapturer, ipcMain } from 'electron';
 import started from 'electron-squirrel-startup';
+import fs from 'fs';
 import path from 'node:path';
+import sharp from 'sharp';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,10 +55,19 @@ ipcMain.handle('capture-screenshot', async () => {
     return await createScreenshot();
 });
 
-async function createScreenshot () {
-  const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
-  const screenshotPath = path.join(__dirname, 'screenshot.png');
-  fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
+async function createScreenshot() {
+    const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
+    const screenshotPath = path.join(__dirname, 'screenshot.png');
+    await fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
+    return cropScreenshot(screenshotPath)
+    // return screenshotPath; // Send path back to renderer
+}
 
-  return screenshotPath; // Send path back to renderer
+async function cropScreenshot(imagePath){
+    const croppedPath = path.join(__dirname, 'screenshot_crop.png');
+    await sharp(imagePath)
+        .extract({ width: 500, height: 50, left: 700, top: 50 }) // Crop starting from (50,50)
+        .toFile(croppedPath);
+
+    return croppedPath
 }
