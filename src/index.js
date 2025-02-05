@@ -2,6 +2,7 @@ import { app, BrowserWindow, desktopCapturer, ipcMain } from 'electron';
 import started from 'electron-squirrel-startup';
 import fs from 'fs';
 import path from 'node:path';
+import { createWorker } from 'tesseract.js';
 import sharp from 'sharp';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -52,15 +53,17 @@ app.on('window-all-closed', () => {
 
 // Handle screenshot capture from renderer
 ipcMain.handle('capture-screenshot', async () => {
-    return await createScreenshot();
+    return await main();
 });
 
-async function createScreenshot() {
+async function main() {
     const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
     const screenshotPath = path.join(__dirname, 'screenshot.png');
     await fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
-    return cropScreenshot(screenshotPath)
-    // return screenshotPath; // Send path back to renderer
+
+    const croppedPath = await cropScreenshot(screenshotPath)
+    await readText(croppedPath);
+    return croppedPath;
 }
 
 async function cropScreenshot(imagePath){
@@ -70,4 +73,12 @@ async function cropScreenshot(imagePath){
         .toFile(croppedPath);
 
     return croppedPath
+}
+
+async function readText(imagePath) {
+    const worker = await createWorker('eng');
+    console.log('Recognizing text...')
+    const result = await worker.recognize(imagePath);
+    console.log(result.data.text);
+    await worker.terminate();
 }
