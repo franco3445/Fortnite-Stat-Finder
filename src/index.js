@@ -30,9 +30,6 @@ const createWindow = () => {
 
     // Load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, 'index.html'));
-
-    // Open the DevTools.
-    mainWindow.webContents.openDevTools();
 };
 
 app.whenReady().then(() => {
@@ -75,9 +72,12 @@ async function main() {
     const croppedPath = await cropScreenshot(screenshotPath);
     const userName = await readText(croppedPath);
     console.log(`Found text: ${userName}`);
-    const stats = await getStatsByUserName(userName);
-    console.log(stats);
-
+    const userInformation = await getUserInformationByUserName(userName);
+    console.log(userInformation);
+    // fs.writeFileSync(path.join(__dirname, 'response.json'), JSON.stringify(userInformation));
+    console.log(`Current Level: ${userInformation.battlePass.level}`);
+    console.log(`Overall K/D: ${userInformation.stats.all.overall.kd}`);
+    console.log(`Win Rate: ${userInformation.stats.all.overall.winRate}`);
 }
 
 async function captureScreenshot() {
@@ -92,13 +92,13 @@ async function cropScreenshot(imagePath){
     console.log('Cropping screenshot...');
     const croppedPath = path.join(__dirname, 'screenshot_crop.png');
     await sharp(imagePath)
-        .extract({ width: 500, height: 50, left: 700, top: 50 }) // Crop starting from (50,50)
+        .extract({ width: 500, height: 75, left: 700, top: 40 }) // Crop starting from (700,50)
         .toFile(croppedPath);
 
     return croppedPath
 }
 
-async function getStatsByUserName(userName) {
+async function getUserInformationByUserName(userName) {
     const url = `https://fortnite-api.com/v2/stats/br/v2?name=${userName}`;
     try {
         const response = await fetch(url, {
@@ -111,7 +111,8 @@ async function getStatsByUserName(userName) {
             new Error(`Response status: ${response.status}`);
         }
 
-        return await response.json();
+        const responseJson = await response.json();
+        return responseJson.data;
     } catch (error) {
         console.log(error);
     }
