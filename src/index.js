@@ -1,5 +1,6 @@
 import { app, BrowserWindow, desktopCapturer, globalShortcut, ipcMain } from 'electron';
 import started from 'electron-squirrel-startup';
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'node:path';
 import { createWorker } from 'tesseract.js';
@@ -74,6 +75,9 @@ async function main() {
     const croppedPath = await cropScreenshot(screenshotPath);
     const userName = await readText(croppedPath);
     console.log(`Found text: ${userName}`);
+    const stats = await getStatsByUserName(userName);
+    console.log(stats);
+
 }
 
 async function captureScreenshot() {
@@ -92,6 +96,25 @@ async function cropScreenshot(imagePath){
         .toFile(croppedPath);
 
     return croppedPath
+}
+
+async function getStatsByUserName(userName) {
+    const url = `https://fortnite-api.com/v2/stats/br/v2?name=${userName}`;
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": process.env.FORTNITE_API_KEY,
+            }
+        });
+        if (!response.ok) {
+            new Error(`Response status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 async function readText(imagePath) {
