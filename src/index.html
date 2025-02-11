@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Hello World!</title>
-  <link rel="stylesheet" href="index.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Player Stats</title>
+  <link rel="stylesheet" href="index.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>💖 Hello World!</h1>
-<p>Welcome to your Electron application.</p>
-<button id="screenshotBtn">Take Screenshot</button>
-<p id="status"></p>
 <script src="renderer.js"></script>
+<div class="stats-container">
+  <h2>Player Stats</h2>
+  <div class="stat">UserName: <span id="userName">TBD...</span></div>
+  <div class="stat">Wins: <span id="wins">120</span></div>
+  <div class="stat">K/D Ratio: <span id="kd">1.75</span></div>
+  <div class="stat">Win Rate: <span id="winrate">65%</span></div>
+  <div class="stat">Current Level: <span id="level">35</span></div>
+</div>
 </body>
 </html>

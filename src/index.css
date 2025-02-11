@@ -1,7 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
-  margin: auto;
-  max-width: 38rem;
-  padding: 2rem;
+  font-family: 'Press Start 2P', cursive;
+  background-color: #000;
+  color: #00ff00;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.stats-container {
+  background: #111;
+  border: 4px solid #00ff00;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00ff00;
+  text-transform: uppercase;
+}
+
+h2 {
+  color: #ffcc00;
+  text-shadow: 3px 3px 0px #000;
+}
+
+.stat {
+  font-size: 1.2em;
+  margin: 10px 0;
+  text-shadow: 2px 2px 0px #000;
+}
+
+/* Simulating an old-school screen flicker effect */
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+.stats-container {
+  animation: flicker 0.15s infinite alternate;
 }
