@@ -73,7 +73,11 @@ async function main() {
     const userName = await readText(croppedPath);
     console.log(`Found text: ${userName}`);
     const userInformation = await getUserInformationByUserName(userName);
-    console.log(userInformation);
+    if (!userInformation) {
+        console.log('Could not find a name...');
+        return;
+    }
+    mainWindow.webContents.send("got-user-name", userInformation);
     // fs.writeFileSync(path.join(__dirname, 'response.json'), JSON.stringify(userInformation));
     console.log(`Current Level: ${userInformation.battlePass.level}`);
     console.log(`Overall K/D: ${userInformation.stats.all.overall.kd}`);

@@ -1,14 +1,14 @@
-document.addEventListener('keydown', async (event) => {
-    // if (event.ctrlKey && event.shiftKey && event.key === 'K') { // Ctrl + Shift + K
-    //     const statusText = document.getElementById('status');
-    //     statusText.textContent = "Capturing screenshot...";
-    //
-    //     try {
-    //         const filePath = await window.electron.captureScreenshot();
-    //         statusText.textContent = `Screenshot saved: ${filePath}`;
-    //     } catch (error) {
-    //         statusText.textContent = 'Failed to capture screenshot.';
-    //         console.error(error);
-    //     }
-    // }
-});
+const userName = document.getElementById('userName');
+const wins = document.getElementById('wins');
+const kdRatio = document.getElementById('kdRatio');
+const winRate = document.getElementById('winRate');
+const level = document.getElementById('level');
+
+window.electron.updateUserName((value) => {
+    userName.innerText = value.account.name.toString();
+    wins.innerText = value.stats.all.overall.wins.toString();
+    kdRatio.innerText = value.stats.all.overall.kd.toString();
+    winRate.innerText = value.stats.all.overall.winRate.toString();
+    level.innerText = value.battlePass.level.toString();
+})
+
