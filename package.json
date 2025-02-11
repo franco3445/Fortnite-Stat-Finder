@@ -2,7 +2,7 @@
   "name": "fortnite-overlay",
   "productName": "fortnite-overlay",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Where they better than you?",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -26,7 +26,6 @@
   "keywords": [],
   "author": {
     "name": "gFranco",
-    "email": "gfranco@velocitymsc.com"
   },
   "license": "MIT",
   "dependencies": {
