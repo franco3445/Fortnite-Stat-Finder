@@ -5,3 +5,6 @@ While the killer's username is still onscreen during a battle royale match, pres
 Start: `npm start`
 
 Find User: `Ctrl+Shift+K`
+
+![image](https://github.com/user-attachments/assets/b80af9eb-849a-4e22-a4a1-e7d5288f0b07)
+
