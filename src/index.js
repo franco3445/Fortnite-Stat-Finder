@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { app, BrowserWindow, desktopCapturer, globalShortcut, ipcMain } from 'electron';
 import started from 'electron-squirrel-startup';
 import 'dotenv/config';
@@ -67,21 +68,43 @@ ipcMain.handle('capture-screenshot', async () => {
 });
 
 async function main() {
-    console.log('Starting main function...')
-    const screenshotPath = await captureScreenshot();
-    const croppedPath = await cropScreenshot(screenshotPath);
-    const userName = await readText(croppedPath);
-    console.log(`Found text: ${userName}`);
-    const userInformation = await getUserInformationByUserName(userName);
-    if (!userInformation) {
-        console.log('Could not find a name...');
-        return;
+    try {
+        console.log('Starting main function...')
+        const screenshotPath = await captureScreenshot();
+        const croppedPath = await cropScreenshot(screenshotPath);
+        // const userName = await readText(croppedPath);
+        const userName = 'Frank-n-Beanz'
+        console.log(`Found text: ${userName}`);
+        const userInformation = await getUserInformationByUserName(userName);
+        if (!userInformation) {
+            console.log('Could not find a name...');
+            await fs.unlink(screenshotPath, (err) => {
+                if (err) throw err;
+                console.log('screenshotPath was deleted');
+            });
+            await fs.unlink(croppedPath, (err) => {
+                if (err) throw err;
+                console.log('croppedPath was deleted');
+            });
+            return;
+        }
+        mainWindow.webContents.send("got-user-name", userInformation);
+        // fs.writeFileSync(path.join(__dirname, 'response.json'), JSON.stringify(userInformation));
+        console.log(`Current Level: ${userInformation.battlePass.level}`);
+        console.log(`Overall K/D: ${userInformation.stats.all.overall.kd}`);
+        console.log(`Win Rate: ${userInformation.stats.all.overall.winRate}`);
+        await fs.unlink(screenshotPath, (err) => {
+            if (err) throw err;
+            console.log('screenshotPath was deleted');
+        });
+        await fs.unlink(croppedPath, (err) => {
+            if (err) throw err;
+            console.log('croppedPath was deleted');
+        });
+    } catch (error) {
+        console.log(error);
     }
-    mainWindow.webContents.send("got-user-name", userInformation);
-    // fs.writeFileSync(path.join(__dirname, 'response.json'), JSON.stringify(userInformation));
-    console.log(`Current Level: ${userInformation.battlePass.level}`);
-    console.log(`Overall K/D: ${userInformation.stats.all.overall.kd}`);
-    console.log(`Win Rate: ${userInformation.stats.all.overall.winRate}`);
+
 }
 
 async function captureScreenshot() {
@@ -103,20 +126,21 @@ async function cropScreenshot(imagePath){
 }
 
 async function getUserInformationByUserName(userName) {
-    const url = `https://fortnite-api.com/v2/stats/br/v2?name=${userName}`;
-    try {
-        const response = await fetch(url, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": process.env.FORTNITE_API_KEY,
-            }
-        });
-        if (!response.ok) {
-            new Error(`Response status: ${response.status}`);
-        }
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": process.env.FORTNITE_API_KEY,
+    }
 
-        const responseJson = await response.json();
-        return responseJson.data;
+    const url = `https://fortnite-api.com/v2/stats/br/v2?name=${userName}`;
+
+    try {
+        const response = await axios({
+            method: 'GET',
+            url,
+            headers
+        });
+
+        return response.data.data;
     } catch (error) {
         console.log(error);
     }
