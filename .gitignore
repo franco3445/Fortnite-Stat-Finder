@@ -93,5 +93,5 @@ out/
 
 # Working Documents
 /src/response.json
-/src/screenshot.png
+/src/tempScreenshots
 /src/screenshot_cropped.png
