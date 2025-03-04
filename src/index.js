@@ -71,28 +71,28 @@ async function main() {
     try {
         console.log('Starting main function...')
         const screenshotPath = await captureScreenshot();
-        const croppedPath = await cropScreenshot(screenshotPath);
+
+        const croppedPath = await cropScreenshot(screenshotPath)
+
         // const userName = await readText(croppedPath);
         const userName = 'Frank-n-Beanz'
         console.log(`Found text: ${userName}`);
+
         const userInformation = await getUserInformationByUserName(userName);
+        
         if (!userInformation) {
             console.log('Could not find a name...');
-            await fs.unlink(screenshotPath, (err) => {
+            await fs.rm(screenshotPath, (err) => {
                 if (err) throw err;
                 console.log('screenshotPath was deleted');
             });
-            await fs.unlink(croppedPath, (err) => {
+            await fs.rm(croppedPath, (err) => {
                 if (err) throw err;
                 console.log('croppedPath was deleted');
             });
             return;
         }
         mainWindow.webContents.send("got-user-name", userInformation);
-        // fs.writeFileSync(path.join(__dirname, 'response.json'), JSON.stringify(userInformation));
-        console.log(`Current Level: ${userInformation.battlePass.level}`);
-        console.log(`Overall K/D: ${userInformation.stats.all.overall.kd}`);
-        console.log(`Win Rate: ${userInformation.stats.all.overall.winRate}`);
         await fs.unlink(screenshotPath, (err) => {
             if (err) throw err;
             console.log('screenshotPath was deleted');
@@ -112,7 +112,7 @@ async function captureScreenshot() {
     const screen = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: {width: 1980, height: 1080} });
     const screenshotPath = path.join(__dirname, 'screenshot.png');
     await fs.writeFileSync(screenshotPath, screen[0].thumbnail.toJPEG(1080));
-    return screenshotPath
+    return screenshotPath;
 }
 
 async function cropScreenshot(imagePath){
@@ -122,7 +122,7 @@ async function cropScreenshot(imagePath){
         .extract({ width: 500, height: 75, left: 700, top: 40 }) // Crop starting from (700,50)
         .toFile(croppedPath);
 
-    return croppedPath
+    return croppedPath;
 }
 
 async function getUserInformationByUserName(userName) {
