@@ -1,6 +1,10 @@
 import axios from 'axios';
 
 export async function getUserInformationByUserName(userName) {
+    if (!userName) {
+        throw Error('A `userName` is required');
+    }
+
     const headers = {
         'Content-Type': 'application/json',
         Authorization: process.env.FORTNITE_API_KEY,

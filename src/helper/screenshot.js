@@ -4,6 +4,10 @@ import fs from 'fs';
 import sharp from 'sharp';
 
 export async function captureScreenshot(directoryName) {
+    if (!directoryName) {
+        throw Error('A `directoryName` is required');
+    }
+
     const screen = await desktopCapturer.getSources({
         types: ['screen'],
         thumbnailSize: {
@@ -22,6 +26,14 @@ export async function captureScreenshot(directoryName) {
 }
 
 export async function cropScreenshot(directoryName, imagePath){
+    if (!directoryName) {
+        throw Error('A `directoryName` is required');
+    }
+
+    if (!imagePath) {
+        throw Error('An `imagePath` is required');
+    }
+
     const croppedPath = path.join(directoryName, 'tempScreenshots/screenshot_crop.png');
     await sharp(imagePath)
         .extract({
