@@ -1,4 +1,8 @@
-import { app, BrowserWindow, globalShortcut } from 'electron';
+import {
+    app,
+    BrowserWindow,
+    globalShortcut,
+} from 'electron';
 import started from 'electron-squirrel-startup';
 import 'dotenv/config';
 import fs from 'fs';
@@ -6,12 +10,12 @@ import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import {
-    captureScreenshot,
-    cropScreenshot
-} from './helper/screenshot.js'
 import { getUserInformationByUserName } from './helper/caller.js';
 import { readText } from './helper/reader.js';
+import {
+    captureScreenshot,
+    cropScreenshot,
+} from './helper/screenshot.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const directoryName = dirname(__filename);
