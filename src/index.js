@@ -5,7 +5,7 @@ import {
 } from 'electron';
 import started from 'electron-squirrel-startup';
 import 'dotenv/config';
-import fs from 'fs';
+import { deleteAsync } from 'del';
 import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -69,19 +69,18 @@ async function main() {
     try {
         const screenshotPath = await captureScreenshot(directoryName);
 
-        const croppedPath = await cropScreenshot(directoryName, screenshotPath)
+        const croppedPath = await cropScreenshot(directoryName, screenshotPath);
 
-        // const userName = await readText(croppedPath);
-        const userName = 'Frank-n-Beanz';
+        const userName = await readText(croppedPath);
 
         const userInformation = await getUserInformationByUserName(userName);
         
         if (!userInformation) {
-            await fs.rmdir(path.join(directoryName, '/tempScreenshots'));
+            await deleteAsync(path.join(directoryName, '/tempScreenshots'));
             return;
         }
         mainWindow.webContents.send('got-user-name', userInformation);
-        await fs.rmdir(path.join(directoryName, '/tempScreenshots'));
+        await deleteAsync(path.join(directoryName, '/tempScreenshots'));
     } catch (error) {
         console.log(error);
     }

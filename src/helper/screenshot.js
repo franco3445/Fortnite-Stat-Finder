@@ -7,6 +7,13 @@ export async function captureScreenshot(directoryName) {
     if (!directoryName) {
         throw Error('A `directoryName` is required');
     }
+    if ( !fs.existsSync(path.join(directoryName, '/tempScreenshots')) ) {
+        fs.mkdir(path.join(directoryName, 'tempScreenshots'), (err) => {
+            if (err) {
+                return console.error(err);
+            }
+        });
+    }
 
     const screen = await desktopCapturer.getSources({
         types: ['screen'],
@@ -17,9 +24,15 @@ export async function captureScreenshot(directoryName) {
     });
     const screenshotPath = path.join(directoryName, '/tempScreenshots/screenshot.png');
 
-    await fs.writeFileSync(
+
+    await fs.promises.writeFile(
         screenshotPath,
-        screen[0].thumbnail.toJPEG(1080)
+        screen[0].thumbnail.toPNG(),
+        (err) => {
+            if (err) {
+                return console.error(err);
+            }
+        }
     );
 
     return screenshotPath;
