@@ -5,7 +5,7 @@ const winRate = document.getElementById('winRate');
 const level = document.getElementById('level');
 
 window.electron.updateUserName((userInformation) => {
-    userName.innerText = userInformation.account.name.toString();
+    userName.value = userInformation.account.name.toString();
     wins.innerText = userInformation.stats.all.overall.wins.toString();
     kdRatio.innerText = userInformation.stats.all.overall.kd.toString();
     winRate.innerText = userInformation.stats.all.overall.winRate.toString();
