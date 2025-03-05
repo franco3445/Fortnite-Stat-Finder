@@ -21,6 +21,6 @@ export async function getUserInformationByUserName(userName) {
 
         return response.data.data;
     } catch (error) {
-        console.log(error);
+        console.log(error.response.data.error);
     }
 }

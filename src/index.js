@@ -76,10 +76,12 @@ async function main() {
         const userInformation = await getUserInformationByUserName(userName);
         
         if (!userInformation) {
+            mainWindow.webContents.send('got-user-name', userName);
             await deleteAsync(path.join(directoryName, '/tempScreenshots'));
             return;
         }
-        mainWindow.webContents.send('got-user-name', userInformation);
+        mainWindow.webContents.send('got-user-name', userName);
+        mainWindow.webContents.send('got-user-info', userInformation);
         await deleteAsync(path.join(directoryName, '/tempScreenshots'));
     } catch (error) {
         console.log(error);

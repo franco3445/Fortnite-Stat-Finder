@@ -4,8 +4,11 @@ const kdRatio = document.getElementById('kdRatio');
 const winRate = document.getElementById('winRate');
 const level = document.getElementById('level');
 
-window.electron.updateUserName((userInformation) => {
-    userName.value = userInformation.account.name.toString();
+window.electron.updateUserName((givenUsername) => {
+    userName.value = givenUsername;
+})
+
+window.electron.updateUserInfo((userInformation) => {
     wins.innerText = userInformation.stats.all.overall.wins.toString();
     kdRatio.innerText = userInformation.stats.all.overall.kd.toString();
     winRate.innerText = userInformation.stats.all.overall.winRate.toString();
