@@ -4,14 +4,18 @@ const kdRatio = document.getElementById('kdRatio');
 const winRate = document.getElementById('winRate');
 const level = document.getElementById('level');
 
+function getInputValue () {
+    window.ipcRenderer.send('userInput', userName.value);
+}
+
 window.electron.updateUserName((givenUsername) => {
     userName.value = givenUsername;
 })
 
 window.electron.updateUserInfo((userInformation) => {
-    wins.innerText = userInformation.stats.all.overall.wins.toString();
-    kdRatio.innerText = userInformation.stats.all.overall.kd.toString();
-    winRate.innerText = userInformation.stats.all.overall.winRate.toString();
-    level.innerText = userInformation.battlePass.level.toString();
+    wins.innerText = userInformation.wins;
+    kdRatio.innerText = userInformation.kdRatio;
+    winRate.innerText = userInformation.winRate;
+    level.innerText = userInformation.level;
 })
 

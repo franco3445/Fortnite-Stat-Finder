@@ -2,6 +2,7 @@ import {
     app,
     BrowserWindow,
     globalShortcut,
+    ipcMain,
 } from 'electron';
 import started from 'electron-squirrel-startup';
 import 'dotenv/config';
@@ -86,5 +87,14 @@ async function main() {
     } catch (error) {
         console.log(error);
     }
-
 }
+
+ipcMain.on('userInput',(event, userInformation) => {
+    getUserInformationByUserName(userInformation).then(requestedInformation => {
+        if (!requestedInformation) {
+
+        //     handle blank information
+        }
+        mainWindow.webContents.send('got-user-info', requestedInformation)
+    });
+})

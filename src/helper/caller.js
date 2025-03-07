@@ -18,8 +18,16 @@ export async function getUserInformationByUserName(userName) {
             url,
             headers
         });
+        const rawUserInformation = response.data.data;
 
-        return response.data.data;
+        return {
+            wins: rawUserInformation.stats.all.overall.wins.toString(),
+            kdRatio: rawUserInformation.stats.all.overall.kd.toString(),
+            winRate: rawUserInformation.stats.all.overall.winRate.toString(),
+            level: rawUserInformation.battlePass.level.toString(),
+        }
+
+
     } catch (error) {
         console.log(error.response.data.error);
     }

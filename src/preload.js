@@ -11,3 +11,7 @@ contextBridge.exposeInMainWorld('electron', {
         (_event, value) => callback(value)
     ),
 });
+
+contextBridge.exposeInMainWorld('ipcRenderer', {
+    send: (channel, data) => ipcRenderer.send(channel,data)
+})
