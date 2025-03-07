@@ -70,9 +70,12 @@ h2 {
 }
 
 .exit {
+  background-color: #000;
   border-radius: 5px;
   border: 4px solid #00ff00;
   box-shadow: 0 0 10px #00ff00;
+  color: #00ff00;
+  font-family: 'Press Start 2P', cursive;
   max-width: 100px;
   padding: 10px;
 }
@@ -80,4 +83,9 @@ h2 {
 .exit-container {
   display: flex;
   justify-content: center;
+}
+
+.exit:hover {
+  border-color: #ffcc00;
+  box-shadow: 0 0 15px #ffcc00;
 }
