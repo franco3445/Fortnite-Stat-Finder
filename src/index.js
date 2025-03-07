@@ -21,6 +21,13 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const directoryName = dirname(__filename);
 
+const tempUserInformation = {
+    wins: '...',
+    kdRatio: '...',
+    winRate: '...',
+    level: '...',
+}
+
 if (started) {
     app.quit();
 }
@@ -57,7 +64,7 @@ app.whenReady().then(() => {
         console.log('registration failed')
     }
 
-    console.log(globalShortcut.isRegistered('Ctrl+Shift+K'))
+    mainWindow.webContents.send('got-user-info', tempUserInformation);
 });
 
 app.on('window-all-closed', () => {
@@ -68,6 +75,9 @@ app.on('window-all-closed', () => {
 
 async function main() {
     try {
+        // Set window to "loading"
+        mainWindow.webContents.send('got-user-info', tempUserInformation);
+
         const screenshotPath = await captureScreenshot(directoryName);
 
         const croppedPath = await cropScreenshot(directoryName, screenshotPath);
@@ -76,25 +86,29 @@ async function main() {
 
         const userInformation = await getUserInformationByUserName(userName);
         
-        if (!userInformation) {
-            mainWindow.webContents.send('got-user-name', userName);
-            await deleteAsync(path.join(directoryName, '/tempScreenshots'));
-            return;
-        }
-        mainWindow.webContents.send('got-user-name', userName);
-        mainWindow.webContents.send('got-user-info', userInformation);
-        await deleteAsync(path.join(directoryName, '/tempScreenshots'));
+        await displayResults(userName, userInformation);
     } catch (error) {
         console.log(error);
     }
 }
 
-ipcMain.on('userInput',(event, userInformation) => {
-    getUserInformationByUserName(userInformation).then(requestedInformation => {
-        if (!requestedInformation) {
+async function displayResults(userName, userInformation) {
+    if (!userInformation) {
+        mainWindow.webContents.send('got-user-name', userName);
+        await deleteAsync(path.join(directoryName, '/tempScreenshots'));
+        mainWindow.webContents.send('got-user-info', tempUserInformation);
+        return;
+    }
+    mainWindow.webContents.send('got-user-name', userName);
+    mainWindow.webContents.send('got-user-info', userInformation);
+    await deleteAsync(path.join(directoryName, '/tempScreenshots'));
+}
 
-        //     handle blank information
-        }
-        mainWindow.webContents.send('got-user-info', requestedInformation)
+ipcMain.on('userInput',(event, userName) => {
+    mainWindow.webContents.send('got-user-info', tempUserInformation);
+    getUserInformationByUserName(userName).then(requestedInformation => {
+        displayResults(userName, requestedInformation).then(r => {
+            console.log('User input complete.')
+        })
     });
 })
