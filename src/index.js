@@ -61,7 +61,7 @@ app.whenReady().then(() => {
     })
 
     if (!ret) {
-        console.log('registration failed')
+        console.log('Key bind registration failed.')
     }
 
     mainWindow.webContents.send('got-user-info', tempUserInformation);
@@ -95,8 +95,8 @@ async function main() {
 async function displayResults(userName, userInformation) {
     if (!userInformation) {
         mainWindow.webContents.send('got-user-name', userName);
-        await deleteAsync(path.join(directoryName, '/tempScreenshots'));
         mainWindow.webContents.send('got-user-info', tempUserInformation);
+        await deleteAsync(path.join(directoryName, '/tempScreenshots'));
         return;
     }
     mainWindow.webContents.send('got-user-name', userName);
