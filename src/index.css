@@ -2,7 +2,7 @@
 
 body {
   align-items: center;
-  background-color: #000;
+  background-color: transparent;
   color: #00ff00;
   display: flex;
   font-family: 'Press Start 2P', cursive;
@@ -10,6 +10,8 @@ body {
   justify-content: center;
   margin: 0;
   text-align: center;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
 
 .stats-container {
@@ -46,21 +48,7 @@ h2 {
   text-align: center;
   text-transform: uppercase;
   width: 80%;
-}
-
-/* Simulating an old-school screen flicker effect */
-@keyframes flicker {
-  0% { opacity: 1; }
-  50% { opacity: 0.8; }
-  100% { opacity: 1; }
-}
-
-.stats-container {
-  animation: flicker 0.2s infinite alternate;
-}
-
-.input-field {
-  animation: flicker 0.2s infinite alternate;
+  -webkit-app-region: no-drag;
 }
 
 /* Glow effect when the input is focused */
@@ -78,6 +66,7 @@ h2 {
   font-family: 'Press Start 2P', cursive;
   max-width: 100px;
   padding: 10px;
+  -webkit-app-region: no-drag;
 }
 
 .exit-container {

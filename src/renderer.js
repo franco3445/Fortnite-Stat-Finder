@@ -1,11 +1,16 @@
-const userName = document.getElementById('userName');
-const wins = document.getElementById('wins');
+const exitButton = document.getElementById('exit');
 const kdRatio = document.getElementById('kdRatio');
-const winRate = document.getElementById('winRate');
 const level = document.getElementById('level');
+const userName = document.getElementById('userName');
+const winRate = document.getElementById('winRate');
+const wins = document.getElementById('wins');
+
+exitButton.addEventListener('click', () => {
+    window.electron.closeApp();
+});
 
 function getInputValue () {
-    window.ipcRenderer.send('userInput', userName.value);
+    window.electron.send('userInput', userName.value);
 }
 
 window.electron.updateUserName((givenUsername) => {
@@ -18,4 +23,3 @@ window.electron.updateUserInfo((userInformation) => {
     winRate.innerText = userInformation.winRate;
     level.innerText = userInformation.level;
 })
-

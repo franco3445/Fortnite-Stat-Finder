@@ -36,11 +36,19 @@ let mainWindow;
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        autoHideMenuBar: true,
+        frame: false,
+        height: 400,
         webPreferences: {
             preload: path.join(directoryName, 'preload.js'),
         },
+        maxHeight: 400,
+        maxWidth: 600,
+        minHeight: 400,
+        minWidth: 600,
+        transparent: true,
+        alwaysOnTop: true,
+        width: 600,
     });
 
     mainWindow.loadFile(path.join(directoryName, 'index.html'));
@@ -65,12 +73,6 @@ app.whenReady().then(() => {
     }
 
     mainWindow.webContents.send('got-user-info', tempUserInformation);
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
 });
 
 async function main() {
@@ -103,6 +105,10 @@ async function displayResults(userName, userInformation) {
     mainWindow.webContents.send('got-user-info', userInformation);
     await deleteAsync(path.join(directoryName, '/tempScreenshots'));
 }
+
+ipcMain.on('close-app', () => {
+    app.quit();
+});
 
 ipcMain.on('userInput',(event, userName) => {
     mainWindow.webContents.send('got-user-info', tempUserInformation);
