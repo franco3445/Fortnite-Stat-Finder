@@ -95,12 +95,7 @@ async function main() {
 }
 
 async function displayResults(userName, userInformation) {
-    if (!userInformation) {
-        mainWindow.webContents.send('got-user-name', userName);
-        mainWindow.webContents.send('got-user-info', tempUserInformation);
-        await deleteAsync(path.join(directoryName, '/tempScreenshots'));
-        return;
-    }
+    userInformation = userInformation || tempUserInformation
     mainWindow.webContents.send('got-user-name', userName);
     mainWindow.webContents.send('got-user-info', userInformation);
     await deleteAsync(path.join(directoryName, '/tempScreenshots'));
